@@ -1,145 +1,25 @@
-# Simple Apriori Implementation
-
 from itertools import combinations
+d=[[""milk,"bread"],["milk","beer"],["bread","beer"],["milk","bread","beer"]]
 
-# Sample dataset
-transactions = [
-    ['milk', 'bread', 'butter'],
-    ['bread', 'butter'],
-    ['milk', 'bread'],
-    ['milk', 'butter'],
-    ['bread', 'butter']
-]
+s,c=2,0.5
 
-min_support = 2
+cnt={}
 
-# Step 1: Get all unique items
-items = set()
-for transaction in transactions:
-    for item in transaction:
-        items.add(item)
+for t in d:
+	for i in t+list(combinations(t,2)):
+		cnt[i]=cnt.get(i,0)+1
+print("Support: ")
 
-# Step 2: Generate frequent 1-itemsets
-freq_items = {}
-for item in items:
-    count = sum([1 for t in transactions if item in t])
-    if count >= min_support:
-        freq_items[(item,)] = count
+for k,v in cnt.items():
+	if v>=s:
+		print(k,v)
+print("Confidence: ")
 
-print("Frequent 1-itemsets:", freq_items)
+for a,b in combinations(["milk","bread","beer"],2):
+	x=cnt[(a,b)]/cnt[a]
+	y=cnt[(a,b)]/cnt[b]
 
-# Step 3: Generate 2-itemsets
-pairs = list(combinations(items, 2))
-freq_pairs = {}
-
-for pair in pairs:
-    count = sum([1 for t in transactions if pair[0] in t and pair[1] in t])
-    if count >= min_support:
-        freq_pairs[pair] = count
-
-print("Frequent 2-itemsets:", freq_pairs)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Simple Apriori Implementation
-
-# Import combinations function to generate pairs of items
-from itertools import combinations
-
-
-# -------------------------------
-# STEP 1: DEFINE DATASET
-# -------------------------------
-
-# Each list inside 'transactions' represents one transaction
-# Example: ['milk', 'bread'] means both items were bought together
-transactions = [
-    ['milk', 'bread', 'butter'],
-    ['bread', 'butter'],
-    ['milk', 'bread'],
-    ['milk', 'butter'],
-    ['bread', 'butter']
-]
-
-# Minimum support threshold
-# Only itemsets appearing at least 2 times will be considered frequent
-min_support = 2
-
-
-# -------------------------------
-# STEP 2: FIND UNIQUE ITEMS
-# -------------------------------
-
-# Create an empty set to store unique items
-items = set()
-
-# Loop through each transaction
-for transaction in transactions:
-    # Loop through each item in transaction
-    for item in transaction:
-        items.add(item)   # Add item to set (automatically avoids duplicates)
-
-
-# -------------------------------
-# STEP 3: FIND FREQUENT 1-ITEMSETS
-# -------------------------------
-
-# Dictionary to store item and its frequency
-freq_items = {}
-
-# Loop through each unique item
-for item in items:
-    # Count how many transactions contain this item
-    count = sum([1 for t in transactions if item in t])
-
-    # Check if it meets minimum support
-    if count >= min_support:
-        # Store item as a tuple (important format for Apriori)
-        freq_items[(item,)] = count
-
-# Print frequent single items
-print("Frequent 1-itemsets:", freq_items)
-
-
-# -------------------------------
-# STEP 4: GENERATE 2-ITEMSETS
-# -------------------------------
-
-# Generate all possible pairs of items
-pairs = list(combinations(items, 2))
-
-# Dictionary to store frequent pairs
-freq_pairs = {}
-
-# Loop through each pair
-for pair in pairs:
-    # Count how many transactions contain BOTH items
-    count = sum([1 for t in transactions if pair[0] in t and pair[1] in t])
-
-    # Check minimum support
-    if count >= min_support:
-        freq_pairs[pair] = count
-
-# Print frequent pairs
-print("Frequent 2-itemsets:", freq_pairs)
+	if x>=c:
+		print(a,"-->",b,round(x,3))
+	if y>=c:
+		print(b,"-->",a,round(y,3))
